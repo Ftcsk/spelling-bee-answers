@@ -1,0 +1,71 @@
+---
+import Base from '../../layouts/Base.astro'
+import { getAllAnswers, formatDate } from '../../lib/answers'
+
+export function getStaticPaths() {
+  const answers = getAllAnswers()
+  const allWords = [...new Set(answers.flatMap(a => a.words.map(w => w.word)))]
+  return allWords.map(word => ({ params: { word: word.toLowerCase() } }))
+}
+
+const { word } = Astro.params
+const wordUpper = word.toUpperCase()
+const answers = getAllAnswers()
+
+const appearances = answers
+  .filter(a => a.words.some(w => w.word === wordUpper))
+  .map(a => ({
+    date: a.date,
+    entry: a.words.find(w => w.word === wordUpper)!,
+  }))
+
+const def = appearances[0]?.entry
+
+const title = `${wordUpper} Definition — Spelling Bee | SpellingBeeAnswers`
+const description = def
+  ? `${wordUpper} (${def.partOfSpeech}): ${def.definition}`
+  : `${wordUpper} has appeared in NYT Spelling Bee ${appearances.length} time${appearances.length !== 1 ? 's' : ''}.`
+---
+<Base title={title} description={description}>
+  <main class="max-w-2xl mx-auto px-4 py-10">
+    <div class="mb-4">
+      <a href="/words" class="text-sm text-gray-400 hover:text-gray-600">← All Words</a>
+    </div>
+
+    <h1 class="text-4xl font-bold text-gray-900 mb-2">{wordUpper}</h1>
+
+    {def?.isPangram && (
+      <span class="inline-block mb-4 px-3 py-1 bg-yellow-400 text-yellow-900 rounded-full text-sm font-bold">⭐ Pangram</span>
+    )}
+
+    {def ? (
+      <div class="bg-white border border-gray-200 rounded-xl p-6 mb-8">
+        <p class="text-xs text-gray-400 italic mb-2">{def.partOfSpeech}</p>
+        <p class="text-gray-800 text-lg">{def.definition}</p>
+      </div>
+    ) : (
+      <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-8">
+        <p class="text-gray-500 text-sm">Definition coming soon.</p>
+      </div>
+    )}
+
+    <section>
+      <h2 class="text-lg font-semibold text-gray-800 mb-3">
+        Appeared in {appearances.length} puzzle{appearances.length !== 1 ? 's' : ''}
+      </h2>
+      <ul class="divide-y divide-gray-100">
+        {appearances.map(a => (
+          <li>
+            <a href={`/answers/${a.date}`}
+               class="flex justify-between items-center py-3 hover:text-yellow-600 transition-colors">
+              <span class="text-gray-700">{formatDate(a.date)}</span>
+              <span class="text-xs text-gray-400">
+                {a.entry.isPangram ? '⭐ Pangram · ' : ''}→
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </main>
+</Base>
