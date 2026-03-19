@@ -24,23 +24,62 @@ const schema = JSON.stringify({
     <h1 class="text-3xl font-bold text-gray-900 mb-1">NYT Spelling Bee Answers</h1>
     <p class="text-gray-500 mb-6">{dateLabel} · {today.words.length} words</p>
 
-    <!-- Letter Hive -->
-    <div class="flex flex-col items-center gap-2 my-6">
-      <p class="text-sm text-gray-500 mb-2">Today's letters</p>
-      <div class="flex gap-2">
-        {today.outerLetters.slice(0, 3).map(l => (
-          <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{l.toUpperCase()}</div>
-        ))}
-      </div>
-      <div class="flex gap-2">
-        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{today.outerLetters[3]?.toUpperCase()}</div>
-        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-yellow-400 text-yellow-900">{today.centerLetter.toUpperCase()}</div>
-        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{today.outerLetters[4]?.toUpperCase()}</div>
-      </div>
-      <div class="flex gap-2">
-        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{today.outerLetters[5]?.toUpperCase()}</div>
+    <!-- Letter Hive (honeycomb) -->
+    <div class="flex flex-col items-center my-8">
+      <p class="text-sm text-gray-500 mb-4">Today's letters</p>
+      <div class="hive">
+        <!-- Row 1: outer[0], outer[1] -->
+        <div class="hive-row">
+          <div class="hex hex-outer">{today.outerLetters[0]?.toUpperCase()}</div>
+          <div class="hex hex-outer">{today.outerLetters[1]?.toUpperCase()}</div>
+        </div>
+        <!-- Row 2: outer[2], center, outer[3] -->
+        <div class="hive-row">
+          <div class="hex hex-outer">{today.outerLetters[2]?.toUpperCase()}</div>
+          <div class="hex hex-center">{today.centerLetter.toUpperCase()}</div>
+          <div class="hex hex-outer">{today.outerLetters[3]?.toUpperCase()}</div>
+        </div>
+        <!-- Row 3: outer[4], outer[5] -->
+        <div class="hive-row">
+          <div class="hex hex-outer">{today.outerLetters[4]?.toUpperCase()}</div>
+          <div class="hex hex-outer">{today.outerLetters[5]?.toUpperCase()}</div>
+        </div>
       </div>
     </div>
+
+    <style>
+      .hive {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+      .hive-row {
+        display: flex;
+        gap: 4px;
+      }
+      .hex {
+        width: 64px;
+        height: 72px;
+        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        cursor: default;
+        user-select: none;
+      }
+      .hex-outer {
+        background-color: #e5e7eb;
+        color: #374151;
+      }
+      .hex-center {
+        background-color: #facc15;
+        color: #713f12;
+      }
+    </style>
 
     <!-- Pangrams -->
     <section class="mt-8 mb-6">
