@@ -5,13 +5,9 @@ export const GET: APIRoute = () => {
   const base = 'https://spellingbeeanswers.xyz'
   const answers = getAllAnswers()
 
-  const staticPages = ['', '/answers', '/hints', '/words', '/about']
-
+  const staticPages = ['', '/answers']
   const datePages = answers.map(a => `/answers/${a.date}`)
-
-  const wordPages = [...new Set(answers.flatMap(a => a.words.map(w => `/words/${w.word.toLowerCase()}`)))]
-
-  const allUrls = [...staticPages, ...datePages, ...wordPages]
+  const allUrls = [...staticPages, ...datePages]
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

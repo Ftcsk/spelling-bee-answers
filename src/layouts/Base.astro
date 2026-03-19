@@ -43,14 +43,12 @@ const canonical = new URL(Astro.url.pathname, 'https://spellingbeeanswers.xyz').
         <a href="/" class="text-lg font-bold text-yellow-500 hover:text-yellow-600">🐝 SpellingBeeAnswers</a>
         <a href="/" class="text-sm text-gray-600 hover:text-gray-900">Today</a>
         <a href="/answers" class="text-sm text-gray-600 hover:text-gray-900">Archive</a>
-        <a href="/hints" class="text-sm text-gray-600 hover:text-gray-900">Hints</a>
-        <a href="/words" class="text-sm text-gray-600 hover:text-gray-900">Words</a>
       </nav>
     </header>
     <slot />
     <footer class="max-w-2xl mx-auto px-4 py-8 mt-12 border-t border-gray-200 text-center text-sm text-gray-400">
       <p>Not affiliated with The New York Times. For entertainment purposes only.</p>
-      <p class="mt-1"><a href="/about" class="hover:underline">About</a> · <a href="/sitemap-index.xml" class="hover:underline">Sitemap</a></p>
+      <p class="mt-1"><a href="/sitemap.xml" class="hover:underline">Sitemap</a></p>
     </footer>
   </body>
 </html>
