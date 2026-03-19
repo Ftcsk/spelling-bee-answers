@@ -24,8 +24,16 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Install Python deps
+        run: pip install PyNaCl
+
       - name: Fetch today's answers
         run: python3 scripts/fetch_answers.py
+
+      - name: Generate daily inspiration
+        env:
+          KIMI_API_KEY: ${{ secrets.KIMI_API_KEY }}
+        run: python3 scripts/generate_inspiration.py
 
       - name: Install dependencies
         run: npm ci
@@ -39,10 +47,10 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: npx wrangler pages deploy dist --project-name=spelling-bee-answers --branch=main
 
-      - name: Commit updated answers.json
+      - name: Commit updated data files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/answers.json
-          git diff --staged --quiet || git commit -m "chore: auto-update answers $(date -u +%Y-%m-%d)"
+          git add data/answers.json data/inspiration.json
+          git diff --staged --quiet || git commit -m "chore: auto-update answers & inspiration $(date -u +%Y-%m-%d)"
           git push
