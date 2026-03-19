@@ -7,10 +7,7 @@ import { resolve } from 'path'
 const today = getTodayAnswer()
 const dateLabel = formatDate(today.date)
 const title = `NYT Spelling Bee Answers Today - ${dateLabel} | SpellingBeeAnswers`
-const description = `All ${today.words.length} NYT Spelling Bee answers for ${dateLabel}. Pangrams, definitions, and hints included.`
-
-// Sort words alphabetically
-const sortedWords = [...today.words].sort((a, b) => a.word.localeCompare(b.word))
+const description = `NYT Spelling Bee answers for ${dateLabel}. Pangrams and daily inspiration included.`
 
 // Load today's inspiration quote
 const inspirationPath = resolve('data/inspiration.json')
@@ -39,18 +36,15 @@ const schema = JSON.stringify({
     <div class="flex flex-col items-center my-8">
       <p class="text-sm text-gray-500 mb-4">Today's letters</p>
       <div class="hive">
-        <!-- Row 1: outer[0], outer[1] -->
         <div class="hive-row">
           <div class="hex hex-outer">{today.outerLetters[0]?.toUpperCase()}</div>
           <div class="hex hex-outer">{today.outerLetters[1]?.toUpperCase()}</div>
         </div>
-        <!-- Row 2: outer[2], center, outer[3] -->
         <div class="hive-row">
           <div class="hex hex-outer">{today.outerLetters[2]?.toUpperCase()}</div>
           <div class="hex hex-center">{today.centerLetter.toUpperCase()}</div>
           <div class="hex hex-outer">{today.outerLetters[3]?.toUpperCase()}</div>
         </div>
-        <!-- Row 3: outer[4], outer[5] -->
         <div class="hive-row">
           <div class="hex hex-outer">{today.outerLetters[4]?.toUpperCase()}</div>
           <div class="hex hex-outer">{today.outerLetters[5]?.toUpperCase()}</div>
@@ -59,37 +53,17 @@ const schema = JSON.stringify({
     </div>
 
     <style>
-      .hive {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-      }
-      .hive-row {
-        display: flex;
-        gap: 4px;
-      }
+      .hive { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+      .hive-row { display: flex; gap: 4px; }
       .hex {
-        width: 64px;
-        height: 72px;
+        width: 64px; height: 72px;
         clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.25rem;
-        font-weight: 800;
-        letter-spacing: 0.05em;
-        cursor: default;
-        user-select: none;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.25rem; font-weight: 800; letter-spacing: 0.05em;
+        cursor: default; user-select: none;
       }
-      .hex-outer {
-        background-color: #e5e7eb;
-        color: #374151;
-      }
-      .hex-center {
-        background-color: #facc15;
-        color: #713f12;
-      }
+      .hex-outer { background-color: #e5e7eb; color: #374151; }
+      .hex-center { background-color: #facc15; color: #713f12; }
     </style>
 
     <!-- Pangrams -->
@@ -97,19 +71,12 @@ const schema = JSON.stringify({
       <h2 class="text-xl font-semibold text-yellow-600 mb-3">🌟 Pangram{today.pangrams.length > 1 ? 's' : ''}</h2>
       <div class="flex flex-wrap gap-2">
         {today.pangrams.map(p => (
-          <a href={`/words/${p.toLowerCase()}`}
-             class="bg-yellow-100 text-yellow-800 font-bold px-3 py-1 rounded-full text-sm tracking-wide hover:bg-yellow-200 transition-colors">
+          <span class="bg-yellow-100 text-yellow-800 font-bold px-3 py-1 rounded-full text-sm tracking-wide">
             {p}
-          </a>
+          </span>
         ))}
       </div>
     </section>
-
-    <!-- Hints CTA -->
-    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8 text-sm">
-      <span class="text-blue-700">Don't want spoilers?</span>
-      <a href="/hints" class="ml-2 text-blue-600 font-semibold hover:underline">Try the hints page →</a>
-    </div>
 
     <!-- Daily Inspiration -->
     {todayQuote && (
@@ -119,45 +86,5 @@ const schema = JSON.stringify({
         <p class="text-xs text-gray-400 mt-2">Generated from today's Spelling Bee words</p>
       </div>
     )}
-
-    <!-- All Words with show/hide toggle -->
-    <section>
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-semibold text-gray-800">All Answers ({today.words.length} words)</h2>
-        <button id="toggle-answers" onclick="toggleAnswers()"
-          class="text-sm px-3 py-1 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors">
-          Hide Answers
-        </button>
-      </div>
-
-      <div id="answers-list" class="space-y-2">
-        {sortedWords.map(w => (
-          <div class={`rounded-lg border p-3 ${w.isPangram ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200 bg-white'}`}>
-            <div class="flex items-center gap-2">
-              <a href={`/words/${w.word.toLowerCase()}`}
-                 class="font-bold text-gray-900 tracking-wide hover:text-yellow-600 transition-colors">
-                {w.word}
-              </a>
-              {w.partOfSpeech && <span class="text-xs text-gray-400 italic">{w.partOfSpeech}</span>}
-              {w.isPangram && <span class="ml-auto text-xs bg-yellow-400 text-yellow-900 font-semibold px-2 py-0.5 rounded-full">Pangram ⭐</span>}
-            </div>
-            {w.definition && <p class="text-sm text-gray-600 mt-1">{w.definition}</p>}
-          </div>
-        ))}
-      </div>
-    </section>
   </main>
-
-  <script>
-    function toggleAnswers() {
-      const list = document.getElementById('answers-list')
-      const btn = document.getElementById('toggle-answers')
-      if (!list || !btn) return
-      const hidden = list.style.display === 'none'
-      list.style.display = hidden ? 'block' : 'none'
-      btn.textContent = hidden ? 'Hide Answers' : 'Show Answers'
-    }
-    // expose globally
-    (window as any).toggleAnswers = toggleAnswers
-  </script>
 </Base>
