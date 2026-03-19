@@ -2,8 +2,10 @@
 interface Props {
   title: string
   description?: string
+  schema?: string
 }
-const { title, description = 'Daily NYT Spelling Bee answers with word definitions and full archive.' } = Astro.props
+const { title, description = 'Daily NYT Spelling Bee answers with word definitions and full archive.', schema } = Astro.props
+const canonical = new URL(Astro.url.pathname, 'https://spellingbeeanswers.xyz').href
 ---
 <!doctype html>
 <html lang="en">
@@ -12,19 +14,35 @@ const { title, description = 'Daily NYT Spelling Bee answers with word definitio
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SpellingBeeAnswers" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <!-- Schema -->
+    {schema && <script type="application/ld+json" set:html={schema} />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body class="bg-gray-50 min-h-screen">
     <header class="bg-white border-b border-gray-200">
-      <nav class="max-w-2xl mx-auto px-4 py-4 flex items-center gap-6">
+      <nav class="max-w-2xl mx-auto px-4 py-4 flex items-center gap-6 flex-wrap">
         <a href="/" class="text-lg font-bold text-yellow-500 hover:text-yellow-600">🐝 SpellingBeeAnswers</a>
         <a href="/" class="text-sm text-gray-600 hover:text-gray-900">Today</a>
         <a href="/answers" class="text-sm text-gray-600 hover:text-gray-900">Archive</a>
         <a href="/hints" class="text-sm text-gray-600 hover:text-gray-900">Hints</a>
+        <a href="/words" class="text-sm text-gray-600 hover:text-gray-900">Words</a>
       </nav>
     </header>
     <slot />
     <footer class="max-w-2xl mx-auto px-4 py-8 mt-12 border-t border-gray-200 text-center text-sm text-gray-400">
-      Not affiliated with The New York Times. For entertainment purposes only.
+      <p>Not affiliated with The New York Times. For entertainment purposes only.</p>
+      <p class="mt-1"><a href="/about" class="hover:underline">About</a> · <a href="/sitemap-index.xml" class="hover:underline">Sitemap</a></p>
     </footer>
   </body>
 </html>

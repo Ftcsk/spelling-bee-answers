@@ -5,53 +5,100 @@ import { getTodayAnswer, formatDate } from '../lib/answers'
 const today = getTodayAnswer()
 const dateLabel = formatDate(today.date)
 const title = `NYT Spelling Bee Answers Today - ${dateLabel} | SpellingBeeAnswers`
+const description = `All ${today.words.length} NYT Spelling Bee answers for ${dateLabel}. Pangrams, definitions, and hints included.`
+
+// Sort words alphabetically
+const sortedWords = [...today.words].sort((a, b) => a.word.localeCompare(b.word))
+
+const schema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": `NYT Spelling Bee Answers Today - ${dateLabel}`,
+  "datePublished": today.date,
+  "description": description,
+  "publisher": { "@type": "Organization", "name": "SpellingBeeAnswers" }
+})
 ---
-<Base title={title} description={`All NYT Spelling Bee answers for today, ${dateLabel}. Find the pangram and every valid word with definitions.`}>
+<Base title={title} description={description} schema={schema}>
   <main class="max-w-2xl mx-auto px-4 py-10">
     <h1 class="text-3xl font-bold text-gray-900 mb-1">NYT Spelling Bee Answers</h1>
-    <p class="text-gray-500 mb-8">{dateLabel}</p>
+    <p class="text-gray-500 mb-6">{dateLabel} · {today.words.length} words</p>
 
     <!-- Letter Hive -->
     <div class="flex flex-col items-center gap-2 my-6">
       <p class="text-sm text-gray-500 mb-2">Today's letters</p>
       <div class="flex gap-2">
         {today.outerLetters.slice(0, 3).map(l => (
-          <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{l}</div>
+          <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{l.toUpperCase()}</div>
         ))}
       </div>
       <div class="flex gap-2">
-        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{today.outerLetters[3]}</div>
-        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-yellow-400 text-yellow-900">{today.centerLetter}</div>
-        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{today.outerLetters[4]}</div>
+        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{today.outerLetters[3]?.toUpperCase()}</div>
+        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-yellow-400 text-yellow-900">{today.centerLetter.toUpperCase()}</div>
+        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{today.outerLetters[4]?.toUpperCase()}</div>
       </div>
       <div class="flex gap-2">
-        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{today.outerLetters[5]}</div>
+        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{today.outerLetters[5]?.toUpperCase()}</div>
       </div>
     </div>
 
     <!-- Pangrams -->
-    <section class="mt-10">
-      <h2 class="text-xl font-semibold text-yellow-600 mb-4">🌟 Pangram{today.pangrams.length > 1 ? 's' : ''}</h2>
-      <div class="flex flex-wrap gap-2 mb-8">
+    <section class="mt-8 mb-6">
+      <h2 class="text-xl font-semibold text-yellow-600 mb-3">🌟 Pangram{today.pangrams.length > 1 ? 's' : ''}</h2>
+      <div class="flex flex-wrap gap-2">
         {today.pangrams.map(p => (
-          <span class="bg-yellow-100 text-yellow-800 font-bold px-3 py-1 rounded-full text-sm tracking-wide">{p}</span>
+          <a href={`/words/${p.toLowerCase()}`}
+             class="bg-yellow-100 text-yellow-800 font-bold px-3 py-1 rounded-full text-sm tracking-wide hover:bg-yellow-200 transition-colors">
+            {p}
+          </a>
         ))}
       </div>
+    </section>
 
-      <!-- All Words -->
-      <h2 class="text-xl font-semibold text-gray-800 mb-4">All Answers ({today.words.length} words)</h2>
-      <div class="space-y-3">
-        {today.words.map(w => (
-          <div class={`rounded-lg border p-4 ${w.isPangram ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200 bg-white'}`}>
+    <!-- Hints CTA -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8 text-sm">
+      <span class="text-blue-700">Don't want spoilers?</span>
+      <a href="/hints" class="ml-2 text-blue-600 font-semibold hover:underline">Try the hints page →</a>
+    </div>
+
+    <!-- All Words with show/hide toggle -->
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold text-gray-800">All Answers ({today.words.length} words)</h2>
+        <button id="toggle-answers" onclick="toggleAnswers()"
+          class="text-sm px-3 py-1 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors">
+          Hide Answers
+        </button>
+      </div>
+
+      <div id="answers-list" class="space-y-2">
+        {sortedWords.map(w => (
+          <div class={`rounded-lg border p-3 ${w.isPangram ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200 bg-white'}`}>
             <div class="flex items-center gap-2">
-              <span class="font-bold text-gray-900 tracking-wide">{w.word}</span>
-              <span class="text-xs text-gray-400 italic">{w.partOfSpeech}</span>
-              {w.isPangram && <span class="ml-auto text-xs bg-yellow-400 text-yellow-900 font-semibold px-2 py-0.5 rounded-full">Pangram</span>}
+              <a href={`/words/${w.word.toLowerCase()}`}
+                 class="font-bold text-gray-900 tracking-wide hover:text-yellow-600 transition-colors">
+                {w.word}
+              </a>
+              {w.partOfSpeech && <span class="text-xs text-gray-400 italic">{w.partOfSpeech}</span>}
+              {w.isPangram && <span class="ml-auto text-xs bg-yellow-400 text-yellow-900 font-semibold px-2 py-0.5 rounded-full">Pangram ⭐</span>}
             </div>
-            <p class="text-sm text-gray-600 mt-1">{w.definition}</p>
+            {w.definition && <p class="text-sm text-gray-600 mt-1">{w.definition}</p>}
           </div>
         ))}
       </div>
     </section>
   </main>
+
+  <script>
+    function toggleAnswers() {
+      const list = document.getElementById('answers-list')
+      const btn = document.getElementById('toggle-answers')
+      if (!list || !btn) return
+      const hidden = list.style.display === 'none'
+      list.style.display = hidden ? 'block' : 'none'
+      btn.textContent = hidden ? 'Hide Answers' : 'Show Answers'
+    }
+    // expose globally
+    (window as any).toggleAnswers = toggleAnswers
+  </script>
 </Base>

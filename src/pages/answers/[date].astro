@@ -1,66 +1,106 @@
 ---
 import Base from '../../layouts/Base.astro'
-import { getAllAnswers, getAnswerByDate, formatDate } from '../../lib/answers'
+import { getAllAnswers, formatDate } from '../../lib/answers'
 
 export function getStaticPaths() {
-  return getAllAnswers().map(d => ({ params: { date: d.date } }))
+  return getAllAnswers().map(a => ({ params: { date: a.date } }))
 }
 
 const { date } = Astro.params
-const day = getAnswerByDate(date!)
-if (!day) return Astro.redirect('/answers')
+const answers = getAllAnswers()
+const entry = answers.find(a => a.date === date)
 
-const dateLabel = formatDate(day.date)
+if (!entry) return Astro.redirect('/answers')
+
+const dateLabel = formatDate(entry.date)
+const sortedWords = [...entry.words].sort((a, b) => a.word.localeCompare(b.word))
+const title = `NYT Spelling Bee Answers ${dateLabel} | SpellingBeeAnswers`
+const description = `All ${entry.words.length} NYT Spelling Bee answers for ${dateLabel}, including ${entry.pangrams.length} pangram${entry.pangrams.length > 1 ? 's' : ''}.`
+
+const schema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": `NYT Spelling Bee Answers ${dateLabel}`,
+  "datePublished": entry.date,
+  "description": description,
+  "publisher": { "@type": "Organization", "name": "SpellingBeeAnswers" }
+})
 ---
-<Base
-  title={`NYT Spelling Bee Answers ${dateLabel} | SpellingBeeAnswers`}
-  description={`All NYT Spelling Bee answers for ${dateLabel}, including the pangram and word definitions.`}
->
+<Base title={title} description={description} schema={schema}>
   <main class="max-w-2xl mx-auto px-4 py-10">
-    <a href="/answers" class="text-sm text-yellow-600 hover:underline mb-4 inline-block">← Back to Archive</a>
+    <div class="mb-4">
+      <a href="/answers" class="text-sm text-gray-400 hover:text-gray-600">← Archive</a>
+    </div>
+
     <h1 class="text-3xl font-bold text-gray-900 mb-1">Spelling Bee Answers</h1>
-    <p class="text-gray-500 mb-8">{dateLabel}</p>
+    <p class="text-gray-500 mb-6">{dateLabel} · {entry.words.length} words</p>
 
     <!-- Letter Hive -->
     <div class="flex flex-col items-center gap-2 my-6">
-      <p class="text-sm text-gray-500 mb-2">Letters</p>
       <div class="flex gap-2">
-        {day.outerLetters.slice(0, 3).map(l => (
-          <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{l}</div>
+        {entry.outerLetters.slice(0, 3).map(l => (
+          <div class="w-12 h-12 flex items-center justify-center rounded-xl text-lg font-bold bg-gray-100 text-gray-700">{l.toUpperCase()}</div>
         ))}
       </div>
       <div class="flex gap-2">
-        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{day.outerLetters[3]}</div>
-        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-yellow-400 text-yellow-900">{day.centerLetter}</div>
-        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{day.outerLetters[4]}</div>
+        <div class="w-12 h-12 flex items-center justify-center rounded-xl text-lg font-bold bg-gray-100 text-gray-700">{entry.outerLetters[3]?.toUpperCase()}</div>
+        <div class="w-12 h-12 flex items-center justify-center rounded-xl text-lg font-bold bg-yellow-400 text-yellow-900">{entry.centerLetter.toUpperCase()}</div>
+        <div class="w-12 h-12 flex items-center justify-center rounded-xl text-lg font-bold bg-gray-100 text-gray-700">{entry.outerLetters[4]?.toUpperCase()}</div>
       </div>
       <div class="flex gap-2">
-        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{day.outerLetters[5]}</div>
+        <div class="w-12 h-12 flex items-center justify-center rounded-xl text-lg font-bold bg-gray-100 text-gray-700">{entry.outerLetters[5]?.toUpperCase()}</div>
       </div>
     </div>
 
     <!-- Pangrams -->
-    <section class="mt-10">
-      <h2 class="text-xl font-semibold text-yellow-600 mb-4">🌟 Pangram{day.pangrams.length > 1 ? 's' : ''}</h2>
-      <div class="flex flex-wrap gap-2 mb-8">
-        {day.pangrams.map(p => (
-          <span class="bg-yellow-100 text-yellow-800 font-bold px-3 py-1 rounded-full text-sm tracking-wide">{p}</span>
+    <section class="mb-6">
+      <h2 class="text-lg font-semibold text-yellow-600 mb-3">🌟 Pangram{entry.pangrams.length > 1 ? 's' : ''}</h2>
+      <div class="flex flex-wrap gap-2">
+        {entry.pangrams.map(p => (
+          <a href={`/words/${p.toLowerCase()}`}
+             class="bg-yellow-100 text-yellow-800 font-bold px-3 py-1 rounded-full text-sm hover:bg-yellow-200 transition-colors">
+            {p}
+          </a>
         ))}
       </div>
+    </section>
 
-      <h2 class="text-xl font-semibold text-gray-800 mb-4">All Answers ({day.words.length} words)</h2>
-      <div class="space-y-3">
-        {day.words.map(w => (
-          <div class={`rounded-lg border p-4 ${w.isPangram ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200 bg-white'}`}>
+    <!-- All Words -->
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-800">All Answers ({entry.words.length} words)</h2>
+        <button id="toggle-answers" onclick="toggleAnswers()"
+          class="text-sm px-3 py-1 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors">
+          Hide Answers
+        </button>
+      </div>
+      <div id="answers-list" class="space-y-2">
+        {sortedWords.map(w => (
+          <div class={`rounded-lg border p-3 ${w.isPangram ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200 bg-white'}`}>
             <div class="flex items-center gap-2">
-              <span class="font-bold text-gray-900 tracking-wide">{w.word}</span>
-              <span class="text-xs text-gray-400 italic">{w.partOfSpeech}</span>
-              {w.isPangram && <span class="ml-auto text-xs bg-yellow-400 text-yellow-900 font-semibold px-2 py-0.5 rounded-full">Pangram</span>}
+              <a href={`/words/${w.word.toLowerCase()}`}
+                 class="font-bold text-gray-900 hover:text-yellow-600 transition-colors">
+                {w.word}
+              </a>
+              {w.partOfSpeech && <span class="text-xs text-gray-400 italic">{w.partOfSpeech}</span>}
+              {w.isPangram && <span class="ml-auto text-xs bg-yellow-400 text-yellow-900 font-semibold px-2 py-0.5 rounded-full">Pangram ⭐</span>}
             </div>
-            <p class="text-sm text-gray-600 mt-1">{w.definition}</p>
+            {w.definition && <p class="text-sm text-gray-600 mt-1">{w.definition}</p>}
           </div>
         ))}
       </div>
     </section>
   </main>
+
+  <script>
+    function toggleAnswers() {
+      const list = document.getElementById('answers-list')
+      const btn = document.getElementById('toggle-answers')
+      if (!list || !btn) return
+      const hidden = list.style.display === 'none'
+      list.style.display = hidden ? 'block' : 'none'
+      btn.textContent = hidden ? 'Hide Answers' : 'Show Answers'
+    }
+    (window as any).toggleAnswers = toggleAnswers
+  </script>
 </Base>
