@@ -1,0 +1,20 @@
+---
+import Base from '../../layouts/Base.astro'
+import { getAllAnswers, formatDate } from '../../lib/answers'
+
+const answers = getAllAnswers()
+---
+<Base title="NYT Spelling Bee Answers Archive | SpellingBeeAnswers" description="Browse all past NYT Spelling Bee answers by date.">
+  <main class="max-w-2xl mx-auto px-4 py-10">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Spelling Bee Archive</h1>
+    <p class="text-gray-500 mb-8">All past NYT Spelling Bee answers</p>
+    <div class="space-y-3">
+      {answers.map(day => (
+        <a href={`/answers/${day.date}`} class="flex items-center justify-between p-4 rounded-lg border border-gray-200 hover:border-yellow-400 hover:bg-yellow-50 transition-colors">
+          <span class="font-medium text-gray-800">{formatDate(day.date)}</span>
+          <span class="text-sm text-gray-400">{day.words.length} words →</span>
+        </a>
+      ))}
+    </div>
+  </main>
+</Base>

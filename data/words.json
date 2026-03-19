@@ -1,0 +1,32 @@
+{
+  "STRAINER": {
+    "definition": "A device used to separate solids from liquids by filtering.",
+    "partOfSpeech": "noun",
+    "example": "She used a strainer to drain the pasta.",
+    "pronunciation": "/ˈstreɪnər/"
+  },
+  "ELECTRON": {
+    "definition": "A stable subatomic particle with a negative electric charge.",
+    "partOfSpeech": "noun",
+    "example": "An electron orbits the nucleus of an atom.",
+    "pronunciation": "/ɪˈlɛktrɒn/"
+  },
+  "TRAINED": {
+    "definition": "Having been taught a particular skill or type of behavior.",
+    "partOfSpeech": "adjective",
+    "example": "She is a trained nurse with ten years of experience.",
+    "pronunciation": "/treɪnd/"
+  },
+  "TERRAIN": {
+    "definition": "A stretch of land, especially with regard to its physical features.",
+    "partOfSpeech": "noun",
+    "example": "The soldiers struggled across the rough terrain.",
+    "pronunciation": "/təˈreɪn/"
+  },
+  "RETAINS": {
+    "definition": "Continues to have something; keeps possession of.",
+    "partOfSpeech": "verb",
+    "example": "She retains a sharp memory despite her age.",
+    "pronunciation": "/rɪˈteɪnz/"
+  }
+}

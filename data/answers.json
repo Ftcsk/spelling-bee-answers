@@ -1,0 +1,61 @@
+[
+  {
+    "date": "2026-03-19",
+    "centerLetter": "T",
+    "outerLetters": ["A", "E", "I", "N", "R", "S"],
+    "pangrams": ["STRAINER", "TERRAINS"],
+    "words": [
+      { "word": "STRAINER", "isPangram": true, "definition": "A device used to separate solids from liquids.", "partOfSpeech": "noun" },
+      { "word": "TERRAINS", "isPangram": true, "definition": "Plural of terrain; stretches of land.", "partOfSpeech": "noun" },
+      { "word": "RETAIN", "isPangram": false, "definition": "To keep possession of.", "partOfSpeech": "verb" },
+      { "word": "STRAIN", "isPangram": false, "definition": "To make an unusually great effort.", "partOfSpeech": "verb" },
+      { "word": "TRAIN", "isPangram": false, "definition": "A series of connected vehicles.", "partOfSpeech": "noun" },
+      { "word": "STAIN", "isPangram": false, "definition": "A mark left by a substance.", "partOfSpeech": "noun" },
+      { "word": "SAINT", "isPangram": false, "definition": "A person acknowledged as holy.", "partOfSpeech": "noun" },
+      { "word": "SATIN", "isPangram": false, "definition": "A smooth, glossy fabric.", "partOfSpeech": "noun" },
+      { "word": "ANTIS", "isPangram": false, "definition": "Plural of anti; those opposed.", "partOfSpeech": "noun" },
+      { "word": "TANS", "isPangram": false, "definition": "To make brown by sun exposure.", "partOfSpeech": "verb" }
+    ]
+  },
+  {
+    "date": "2026-03-18",
+    "centerLetter": "O",
+    "outerLetters": ["C", "E", "L", "M", "P", "T"],
+    "pangrams": ["COMPLETE"],
+    "words": [
+      { "word": "COMPLETE", "isPangram": true, "definition": "Having all necessary parts.", "partOfSpeech": "adjective" },
+      { "word": "COMPOTE", "isPangram": false, "definition": "Fruit preserved in syrup.", "partOfSpeech": "noun" },
+      { "word": "TEMPO", "isPangram": false, "definition": "The speed of a piece of music.", "partOfSpeech": "noun" },
+      { "word": "COMET", "isPangram": false, "definition": "A celestial body with a tail.", "partOfSpeech": "noun" },
+      { "word": "POEM", "isPangram": false, "definition": "A piece of writing in verse.", "partOfSpeech": "noun" },
+      { "word": "MOLE", "isPangram": false, "definition": "A small burrowing mammal.", "partOfSpeech": "noun" }
+    ]
+  },
+  {
+    "date": "2026-03-17",
+    "centerLetter": "A",
+    "outerLetters": ["D", "E", "I", "N", "R", "T"],
+    "pangrams": ["TRAINED", "DETRAIN"],
+    "words": [
+      { "word": "TRAINED", "isPangram": true, "definition": "Having been taught a particular skill.", "partOfSpeech": "adjective" },
+      { "word": "DETRAIN", "isPangram": true, "definition": "To alight from a train.", "partOfSpeech": "verb" },
+      { "word": "TIRADE", "isPangram": false, "definition": "A long, angry speech.", "partOfSpeech": "noun" },
+      { "word": "RETAIN", "isPangram": false, "definition": "To keep possession of.", "partOfSpeech": "verb" },
+      { "word": "RETINA", "isPangram": false, "definition": "The light-sensitive layer at the back of the eye.", "partOfSpeech": "noun" },
+      { "word": "TRADE", "isPangram": false, "definition": "The buying and selling of goods.", "partOfSpeech": "noun" },
+      { "word": "TRAIN", "isPangram": false, "definition": "A series of connected vehicles.", "partOfSpeech": "noun" },
+      { "word": "DRAIN", "isPangram": false, "definition": "To cause liquid to flow away.", "partOfSpeech": "verb" },
+      { "word": "IRATE", "isPangram": false, "definition": "Feeling or characterized by great anger.", "partOfSpeech": "adjective" },
+      { "word": "NADIR", "isPangram": false, "definition": "The lowest point of something.", "partOfSpeech": "noun" },
+      { "word": "RAID", "isPangram": false, "definition": "A sudden attack on an enemy.", "partOfSpeech": "noun" },
+      { "word": "RAIN", "isPangram": false, "definition": "Water falling from clouds.", "partOfSpeech": "noun" },
+      { "word": "RANT", "isPangram": false, "definition": "To speak or shout at length in an angry way.", "partOfSpeech": "verb" },
+      { "word": "READ", "isPangram": false, "definition": "To look at and understand written text.", "partOfSpeech": "verb" },
+      { "word": "REIN", "isPangram": false, "definition": "A strap used to control a horse.", "partOfSpeech": "noun" },
+      { "word": "RIDE", "isPangram": false, "definition": "To sit on and control a moving animal or vehicle.", "partOfSpeech": "verb" },
+      { "word": "RIND", "isPangram": false, "definition": "The tough outer layer of fruit.", "partOfSpeech": "noun" },
+      { "word": "TREND", "isPangram": false, "definition": "A general direction of change.", "partOfSpeech": "noun" },
+      { "word": "TRIAD", "isPangram": false, "definition": "A group of three related things.", "partOfSpeech": "noun" }
+    ]
+  }
+]

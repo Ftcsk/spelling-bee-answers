@@ -1,0 +1,66 @@
+---
+import Base from '../../layouts/Base.astro'
+import { getAllAnswers, getAnswerByDate, formatDate } from '../../lib/answers'
+
+export function getStaticPaths() {
+  return getAllAnswers().map(d => ({ params: { date: d.date } }))
+}
+
+const { date } = Astro.params
+const day = getAnswerByDate(date!)
+if (!day) return Astro.redirect('/answers')
+
+const dateLabel = formatDate(day.date)
+---
+<Base
+  title={`NYT Spelling Bee Answers ${dateLabel} | SpellingBeeAnswers`}
+  description={`All NYT Spelling Bee answers for ${dateLabel}, including the pangram and word definitions.`}
+>
+  <main class="max-w-2xl mx-auto px-4 py-10">
+    <a href="/answers" class="text-sm text-yellow-600 hover:underline mb-4 inline-block">← Back to Archive</a>
+    <h1 class="text-3xl font-bold text-gray-900 mb-1">Spelling Bee Answers</h1>
+    <p class="text-gray-500 mb-8">{dateLabel}</p>
+
+    <!-- Letter Hive -->
+    <div class="flex flex-col items-center gap-2 my-6">
+      <p class="text-sm text-gray-500 mb-2">Letters</p>
+      <div class="flex gap-2">
+        {day.outerLetters.slice(0, 3).map(l => (
+          <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{l}</div>
+        ))}
+      </div>
+      <div class="flex gap-2">
+        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{day.outerLetters[3]}</div>
+        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-yellow-400 text-yellow-900">{day.centerLetter}</div>
+        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{day.outerLetters[4]}</div>
+      </div>
+      <div class="flex gap-2">
+        <div class="w-14 h-14 flex items-center justify-center rounded-xl text-xl font-bold bg-gray-100 text-gray-700">{day.outerLetters[5]}</div>
+      </div>
+    </div>
+
+    <!-- Pangrams -->
+    <section class="mt-10">
+      <h2 class="text-xl font-semibold text-yellow-600 mb-4">🌟 Pangram{day.pangrams.length > 1 ? 's' : ''}</h2>
+      <div class="flex flex-wrap gap-2 mb-8">
+        {day.pangrams.map(p => (
+          <span class="bg-yellow-100 text-yellow-800 font-bold px-3 py-1 rounded-full text-sm tracking-wide">{p}</span>
+        ))}
+      </div>
+
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">All Answers ({day.words.length} words)</h2>
+      <div class="space-y-3">
+        {day.words.map(w => (
+          <div class={`rounded-lg border p-4 ${w.isPangram ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200 bg-white'}`}>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-gray-900 tracking-wide">{w.word}</span>
+              <span class="text-xs text-gray-400 italic">{w.partOfSpeech}</span>
+              {w.isPangram && <span class="ml-auto text-xs bg-yellow-400 text-yellow-900 font-semibold px-2 py-0.5 rounded-full">Pangram</span>}
+            </div>
+            <p class="text-sm text-gray-600 mt-1">{w.definition}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </main>
+</Base>
